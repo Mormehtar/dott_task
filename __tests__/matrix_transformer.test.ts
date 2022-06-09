@@ -1,23 +1,32 @@
 import { BlackWhitePixelMatrix } from "../src/matrix.js";
-import {findWhitePixel, MatrixIsBlackError, transformMatrix} from "../src/matrix_transformer.js";
+import {findAllWhitePixels, MatrixIsBlackError, transformMatrix} from "../src/matrix_transformer.js";
 
 
-describe("Test find white pixel", () => {
+describe("Test find all white pixels", () => {
   it("Should find one", () => {
     const matrix = new BlackWhitePixelMatrix(2, 2);
     matrix.parseLine("00");
     matrix.parseLine("01");
-    expect(findWhitePixel(matrix)).toEqual({x: 1, y: 1});
+    expect(findAllWhitePixels(matrix)).toEqual([{x: 1, y: 1}]);
   });
 
   it("Should throw on black matrix", () => {
     const matrix = new BlackWhitePixelMatrix(2, 2);
     matrix.parseLine("00");
     matrix.parseLine("00");
-    expect(() => findWhitePixel(matrix)).toThrow(MatrixIsBlackError);
+    expect(() => findAllWhitePixels(matrix)).toThrow(MatrixIsBlackError);
+  });
+
+  it("Should find two", () => {
+    const matrix = new BlackWhitePixelMatrix(2, 2);
+    matrix.parseLine("10");
+    matrix.parseLine("01");
+    const result = findAllWhitePixels(matrix)
+    expect(result).toContainEqual({x: 0, y: 0});
+    expect(result).toContainEqual({x: 1, y: 1});
+    expect(result).toHaveLength(2);
   });
 });
-
 
 describe("Test build distances", () => {
   it("Should find zero distance", () => {
